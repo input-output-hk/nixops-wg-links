@@ -171,7 +171,9 @@ class WgLinksState(MachineState[WgLinksDefinition]):
         return "wg-links"
 
 
-def index_to_private_ip(wg_keypair: nixops_wg_links.resources.wg_keypair.WgKeypairState, index: int) -> str:
+def index_to_private_ip(
+    wg_keypair: nixops_wg_links.resources.wg_keypair.WgKeypairState, index: int
+) -> str:
 
     a_base = wg_keypair.base_ipv4["a"]
     b_base = wg_keypair.base_ipv4["b"]
@@ -181,10 +183,14 @@ def index_to_private_ip(wg_keypair: nixops_wg_links.resources.wg_keypair.WgKeypa
     try:
         base_addr = ipaddress.IPv4Address(f"{a_base}.{b_base}.{c_base}.{d_base}")
     except ValueError:
-        raise ValueError(f"base ipv4 wireguard address {base_addr} for ‘{wg_keypair.name}’ is invalid")
+        raise ValueError(
+            f"base ipv4 wireguard address {base_addr} for ‘{wg_keypair.name}’ is invalid"
+        )
 
     if not base_addr.is_private:
-        raise ValueError(f"base ipv4 wireguard address {base_addr} for ‘{wg_keypair.name}’ is not a private ipv4 address")
+        raise ValueError(
+            f"base ipv4 wireguard address {base_addr} for ‘{wg_keypair.name}’ is not a private ipv4 address"
+        )
 
     d = (d_base + index) % 256
     d_r = (d_base + index) // 256
@@ -197,10 +203,14 @@ def index_to_private_ip(wg_keypair: nixops_wg_links.resources.wg_keypair.WgKeypa
     try:
         addr = ipaddress.IPv4Address(f"{a}.{b}.{c}.{d}")
     except ValueError:
-        raise ValueError(f"generated wireguard address {addr} for ‘{wg_keypair.name}’ is invalid")
+        raise ValueError(
+            f"generated wireguard address {addr} for ‘{wg_keypair.name}’ is invalid"
+        )
 
     if not addr.is_private:
-        raise ValueError(f"generated wireguard address {addr} for ‘{wg_keypair.name}’ is not a private ipv4")
+        raise ValueError(
+            f"generated wireguard address {addr} for ‘{wg_keypair.name}’ is not a private ipv4"
+        )
 
     return addr.exploded
 
@@ -250,7 +260,12 @@ def mk_matrix(d: Deployment) -> Dict[str, List[Dict[Tuple[str, ...], Any]]]:
         else:
             for m in active_machines.values():
                 # Sync key state if m is up, included, public ip is available and psk is not in sync
-                if (m.state == m.UP) and m.defn and m.public_ipv4 and wg_keypair_list[m.name].psk != psk:
+                if (
+                    (m.state == m.UP)
+                    and m.defn
+                    and m.public_ipv4
+                    and wg_keypair_list[m.name].psk != psk
+                ):
                     upload_wg_keypair(
                         m,
                         wg_keypair_list[m.name].interface_name,
@@ -262,7 +277,11 @@ def mk_matrix(d: Deployment) -> Dict[str, List[Dict[Tuple[str, ...], Any]]]:
 
     def do_machine(m: nixops.backends.MachineState) -> None:
         # Skip configuration if the machine is excluded or the associated wgKeypair is not up yet
-        if not m.defn or m.name not in wg_keypair_list or (wg_keypair_list[m.name].state != wg_keypair_list[m.name].UP):
+        if (
+            not m.defn
+            or m.name not in wg_keypair_list
+            or (wg_keypair_list[m.name].state != wg_keypair_list[m.name].UP)
+        ):
             return
 
         wg_local_ipv4 = index_to_private_ip(wg_keypair_list[m.name], m.index)
@@ -325,7 +344,9 @@ def mk_matrix(d: Deployment) -> Dict[str, List[Dict[Tuple[str, ...], Any]]]:
                 )
 
             # Assert that both machine endpoints agree on the preshared key using one
-            if wg_keypair_list[m.name].use_psk and (wg_keypair_list[m.name].psk != wg_keypair_list[m2.name].psk):
+            if wg_keypair_list[m.name].use_psk and (
+                wg_keypair_list[m.name].psk != wg_keypair_list[m2.name].psk
+            ):
                 raise ValueError(
                     f"‘{m.name}’ and ‘{m2.name}’ do not agree on the preshared key"
                 )
@@ -369,7 +390,11 @@ def mk_matrix(d: Deployment) -> Dict[str, List[Dict[Tuple[str, ...], Any]]]:
         config = attrs_per_resource[r.name]
         if is_machine(r):
             # Skip resource emission if the machine is excluded or the associated wgKeypair is not up yet
-            if not r.defn or r.name not in wg_keypair_list or (wg_keypair_list[r.name].state != wg_keypair_list[r.name].UP):
+            if (
+                not r.defn
+                or r.name not in wg_keypair_list
+                or (wg_keypair_list[r.name].state != wg_keypair_list[r.name].UP)
+            ):
                 return
 
             # Sort the hosts by its canonical host names.
@@ -392,7 +417,7 @@ def mk_matrix(d: Deployment) -> Dict[str, List[Dict[Tuple[str, ...], Any]]]:
                             i,
                             index_to_private_ip(
                                 wg_keypair_list[re.sub("-wg$", "", dns)],
-                                active_machines[re.sub("-wg$", "", dns)].index
+                                active_machines[re.sub("-wg$", "", dns)].index,
                             ),
                         )
             else:

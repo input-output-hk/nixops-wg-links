@@ -89,8 +89,12 @@ class WgKeypairState(nixops.resources.ResourceState[WgKeypairDefinition]):
     pre_down: str = nixops.util.attr_property("wgKeypair.preDown", "", str)
     post_up: str = nixops.util.attr_property("wgKeypair.postUp", "", str)
     post_down: str = nixops.util.attr_property("wgKeypair.postDown", "", str)
-    base_ipv4: Mapping[str, int] = nixops.util.attr_property("wgKeypair.baseIpv4", {}, "json")
-    add_no_wg_hosts: bool = nixops.util.attr_property("wgKeypair.addNoWgHosts", True, bool)
+    base_ipv4: Mapping[str, int] = nixops.util.attr_property(
+        "wgKeypair.baseIpv4", {}, "json"
+    )
+    add_no_wg_hosts: bool = nixops.util.attr_property(
+        "wgKeypair.addNoWgHosts", True, bool
+    )
 
     @classmethod
     def get_type(cls) -> str:
