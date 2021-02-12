@@ -1,17 +1,19 @@
-{ pkgs ? import <nixpkgs> {
-
-  overlays = [
-    (import ../../nix-community/poetry2nix/overlay.nix)
+{ sources ? import nix/sources.nix
+, overlay ? import (sources.poetry2nix + "/overlay.nix")
+, pkgs ? import sources.nixpkgs { overlays = [ overlay ]; }
+}:
+let
+  poetryEnv = (pkgs.poetry2nix.mkPoetryEnv {
+    projectDir = ./.;
+    overrides = pkgs.poetry2nix.overrides.withDefaults overlay;
+  });
+in pkgs.mkShell {
+  buildInputs = with pkgs; [
+    black
+    mypy
+    nixfmt
+    poetry
+    python3
+    python3Packages.flake8
   ];
-
-} }:
-
-pkgs.mkShell {
-  buildInputs = [
-    pkgs.poetry
-    pkgs.python3
-    pkgs.openssl
-  ];
-
-  SOURCE_DATE_EPOCH = "315532800";
 }

@@ -8,13 +8,15 @@ include = [ "nixops_wg_links/nix/*.nix" ]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-nixops = {git = "https://github.com/NixOS/nixops.git"}
-
-[tool.poetry.plugins."nixops"]
-wg_links = "nixops_wg_links.plugin"
+nixops = {git = "https://github.com/NixOS/nixops.git", rev = "master"}
 
 [tool.poetry.dev-dependencies]
 mypy = "^0.790"
+black = "^19.10b0"
+flake8 = "^3.8.2"
+
+[tool.poetry.plugins."nixops"]
+wg_links = "nixops_wg_links.plugin"
 
 [build-system]
 requires = ["poetry>=0.12"]
