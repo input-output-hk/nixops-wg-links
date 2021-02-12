@@ -259,12 +259,10 @@ def mk_matrix(d: Deployment) -> Dict[str, List[Dict[Tuple[str, ...], Any]]]:
                         psk,
                     )
                     wg_keypair_list[m.name].psk = psk
-    else:
-        raise ValueError("preshared key state was not properly generated")
 
     def do_machine(m: nixops.backends.MachineState) -> None:
         # Skip configuration if the machine is excluded or the associated wgKeypair is not up yet
-        if not m.defn or (wg_keypair_list[m.name].state != wg_keypair_list[m.name].UP):
+        if not m.defn or m.name not in wg_keypair_list or (wg_keypair_list[m.name].state != wg_keypair_list[m.name].UP):
             return
 
         wg_local_ipv4 = index_to_private_ip(wg_keypair_list[m.name], m.index)
@@ -371,7 +369,7 @@ def mk_matrix(d: Deployment) -> Dict[str, List[Dict[Tuple[str, ...], Any]]]:
         config = attrs_per_resource[r.name]
         if is_machine(r):
             # Skip resource emission if the machine is excluded or the associated wgKeypair is not up yet
-            if not r.defn or (wg_keypair_list[r.name].state != wg_keypair_list[r.name].UP):
+            if not r.defn or r.name not in wg_keypair_list or (wg_keypair_list[r.name].state != wg_keypair_list[r.name].UP):
                 return
 
             # Sort the hosts by its canonical host names.
