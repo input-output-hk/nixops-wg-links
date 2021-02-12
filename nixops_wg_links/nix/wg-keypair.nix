@@ -16,7 +16,7 @@ with lib; {
     dns = mkOption {
       type = types.listOf types.str;
       example = [ "machine1-wg" ];
-      default = [];
+      default = [ ];
       description = ''
         A list of IP addresses of DNS servers to be configured on the wireguard interface.
         Opening additional firewall ports and networking configuration may required.
@@ -41,7 +41,8 @@ with lib; {
     listenPort = mkOption {
       type = types.addCheck types.int (x: x >= 1 && x <= 65535);
       default = 51820;
-      description = "The default udp port for this wireguard keyPair to listen on.";
+      description =
+        "The default udp port for this wireguard keyPair to listen on.";
     };
 
     persistentKeepalive = mkOption {
@@ -76,7 +77,8 @@ with lib; {
     interfaceName = mkOption {
       type = types.str;
       default = "nixops-wg0";
-      description = "The default wireguard interface name that will be used for configuration.";
+      description =
+        "The default wireguard interface name that will be used for configuration.";
     };
 
     table = mkOption {
@@ -135,22 +137,17 @@ with lib; {
     };
 
     baseIpv4 = mkOption {
-      default = { a = 10; b = 0; c = 0; d = 0; };
-      type = with types; addCheck (attrsOf int) (x:
-        x ? a &&
-        x ? b &&
-        x ? c &&
-        x ? d &&
-        __length(__attrNames x) == 4 &&
-        x.a >= 0 &&
-        x.a <= 255 &&
-        x.b >= 0 &&
-        x.b <= 255 &&
-        x.c >= 0 &&
-        x.c <= 255 &&
-        x.d >= 0 &&
-        x.d <= 255
-      );
+      default = {
+        a = 10;
+        b = 0;
+        c = 0;
+        d = 0;
+      };
+      type = with types;
+        addCheck (attrsOf int) (x:
+          x ? a && x ? b && x ? c && x ? d && __length (__attrNames x) == 4
+          && x.a >= 0 && x.a <= 255 && x.b >= 0 && x.b <= 255 && x.c >= 0 && x.c
+          <= 255 && x.d >= 0 && x.d <= 255);
       description = ''
         The base address used to generate wireguard IPv4 assignments.
         The machine associated with the wireguard link resource will have it's index

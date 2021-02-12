@@ -5,7 +5,7 @@ let
 in {
   options = {
     deployment.wgLinksTo = lib.mkOption {
-      default = [];
+      default = [ ];
       type = types.listOf types.str;
       description = ''
         NixOps will set up encrypted wireguard links to the

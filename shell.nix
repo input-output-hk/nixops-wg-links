@@ -1,7 +1,6 @@
 { sources ? import nix/sources.nix
 , overlay ? import (sources.poetry2nix + "/overlay.nix")
-, pkgs ? import sources.nixpkgs { overlays = [ overlay ]; }
-}:
+, pkgs ? import sources.nixpkgs { overlays = [ overlay ]; } }:
 let
   poetryEnv = (pkgs.poetry2nix.mkPoetryEnv {
     projectDir = ./.;
