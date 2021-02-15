@@ -1,13 +1,13 @@
-{ sources ? import nix/sources.nix
-, overlay ? import (sources.poetry2nix + "/overlay.nix")
-, pkgs ? import sources.nixpkgs { overlays = [ overlay ]; } }:
+{ pkgs ? import ./nix { } }:
 let
-  poetryEnv = (pkgs.poetry2nix.mkPoetryEnv {
+  overrides = import ./overrides.nix { inherit pkgs; };
+  poetryEnv = pkgs.poetry2nix.mkPoetryEnv {
     projectDir = ./.;
-    overrides = pkgs.poetry2nix.overrides.withDefaults overlay;
-  });
+    overrides = pkgs.poetry2nix.overrides.withDefaults overrides;
+  };
 in pkgs.mkShell {
   buildInputs = with pkgs; [
+    poetryEnv
     black
     mypy
     nixfmt
