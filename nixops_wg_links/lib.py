@@ -172,8 +172,14 @@ class WgLinksState(MachineState[WgLinksDefinition]):
 
 
 def index_to_private_ip(
-    wg_keypair: nixops_wg_links.resources.wg_keypair.WgKeypairState, index: int
+    wg_keypair: nixops_wg_links.resources.wg_keypair.WgKeypairState,
+    index: Optional[int],
 ) -> str:
+
+    if not index:
+        raise ValueError(
+            f"‘{re.sub('-wg$', '', wg_keypair.name)}’ is missing an optional machine index that is required for wg-links"
+        )
 
     a_base = wg_keypair.base_ipv4["a"]
     b_base = wg_keypair.base_ipv4["b"]
@@ -389,6 +395,9 @@ def mk_matrix(d: Deployment) -> Dict[str, List[Dict[Tuple[str, ...], Any]]]:
     def emit_resource(r: nixops.resources.ResourceState) -> None:
         config = attrs_per_resource[r.name]
         if is_machine(r):
+            # NOTE: unfortunate mypy doesn't check that is_machine calls an isinstance() function
+            r = cast(nixops.backends.GenericMachineState, r)
+
             # Skip resource emission if the machine is excluded or the associated wgKeypair is not up yet
             if (
                 not r.defn
