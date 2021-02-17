@@ -176,7 +176,7 @@ def index_to_private_ip(
     index: Optional[int],
 ) -> str:
 
-    if not index:
+    if index is None:
         raise ValueError(
             f"‘{re.sub('-wg$', '', wg_keypair.name)}’ is missing an optional machine index that is required for wg-links"
         )

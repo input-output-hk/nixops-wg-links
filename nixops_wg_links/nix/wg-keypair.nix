@@ -141,7 +141,7 @@ with lib; {
         a = 10;
         b = 0;
         c = 0;
-        d = 0;
+        d = 1;
       };
       type = with types;
         addCheck (attrsOf int) (x:
@@ -159,6 +159,8 @@ with lib; {
         single baseIpv4 per deployment.
 
         Wireguard addresses are created as peer-to-peer links with a 32 bit subnet mask.
+
+        The default baseIpv4 is 10.0.0.1 and not 10.0.0.0 to avoid broadcast warnings on ping.
       '';
     };
 
