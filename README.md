@@ -84,7 +84,7 @@ nix shell github:input-output-hk/nixops-flake
 ## Hosts File References
 
 * For each wireguard link that is created and added to a machine, the hosts file of that machine will have an added entry to the target peer machine with a `-wg` appended.
-* If the `wgKeypair` resource option `addNoWgHosts` is set to true instead of the default of false, any machines in the cluster without a wireguard peer, will also be added with a `-nowg` appended.
+* If the `wgKeypair` resource option `addNoWgHosts` is set to true (the default), any machines in the cluster without a wireguard peer, will also be added with a `-nowg` appended.
 
 
 
@@ -125,6 +125,15 @@ nixops export -d $DEPLOYMENT
 ```
 
 * If inconsistent key state is suspected to be a problem, setting `syncState = true` for each `wgKeypair` resource and re-deploying will ensure key state is consistent across the cluster.
+
+* In the event that fresh wireguard keypair state is needed for machine(s) which already have existing wireguard keypair state, destroy the corresponding `wgKeypair`(s) of interest:
+```bash
+nixops destroy -d $DEPLOYMENT --include $WG_KEYPAIRS_TO_DESTROY
+```
+* Then, as long as the `wgKeypair` resource(s) are still defined in the nix, the wireguard plugin will make new key state and utilize it in the next deployment:
+```bash
+nixops deploy -d $DEPLOYMENT
+```
 
 
 ## Developing
