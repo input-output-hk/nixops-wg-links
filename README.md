@@ -1,6 +1,6 @@
 # NixOps Wireguard Plugin
 
-* NixOps (formerly known as Charon) is a tool for deploying NixOS machines in a network or cloud.
+NixOps (formerly known as Charon) is a tool for deploying NixOS machines in a network or cloud.
 
 This repo contains the NixOps Wireguard Plugin.
 
@@ -142,7 +142,7 @@ To view active plugins:
 nixops list-plugins
 ```
 
-* For development and testing in conjunction with other nixops plugins, see the suggestions discussed [here](https://github.com/input-output-hk/nixops-flake#development-and-testing).
+For development and testing in conjunction with other nixops plugins, see the suggestions discussed [here](https://github.com/input-output-hk/nixops-flake#development-and-testing).
 
 
 ## Additional Notes and References
@@ -152,5 +152,5 @@ nixops list-plugins
 * The python code is type checked with [mypy](https://mypy.readthedocs.io/en/stable/).
 * The python code is style checked with [flake8](https://flake8.pycqa.org/en/latest/).
 * The nix code is formatted with [nixfmt](https://hackage.haskell.org/package/nixfmt).
-* For additional information on nixops and plugins, see the main NixOps[repo](https://github.com/NixOS/nixops) and the Nixops [Read the Docs](https://nixops.readthedocs.io/en/latest/index.html).
+* For additional information on nixops and plugins, see the main NixOps [repo](https://github.com/NixOS/nixops) and the Nixops [Read the Docs](https://nixops.readthedocs.io/en/latest/index.html).
 
